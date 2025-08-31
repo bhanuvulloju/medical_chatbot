@@ -7,6 +7,8 @@ on:
 jobs:
   Build:
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.set-image.outputs.image }}
     permissions:
       id-token: write   # required for workload identity federation
       contents: read
@@ -52,8 +54,11 @@ jobs:
           docker push $IMAGE:$TAG
 
       - name: Set image output
-        id: image
-        run: echo "image=us-central1-docker.pkg.dev/learnerspace-412414/medibot/medibot-app:${GITHUB_SHA}" >> $GITHUB_OUTPUT
+        id: set-image
+        run: |
+          IMAGE="us-central1-docker.pkg.dev/learnerspace-412414/medibot/medibot-app"
+          TAG="${GITHUB_SHA}"
+          echo "image=$IMAGE" >> $GITHUB_OUTPUT
 
 
   Deploy:
