@@ -22,6 +22,22 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+          # Cache pip downloads based on changes to requirements.txt.
+          # The first run creates the cache; later runs restore it when available.
+          cache: "pip"
+          cache-dependency-path: "requirements.txt"
+
+      - name: Explain the pip cache
+        run: |
+          echo "The setup-python action checks the cache before dependency installation."
+          echo "GitHub restores matching packages for this OS, Python version, and requirements.txt."
+          echo "If requirements.txt changes, setup-python creates a new cache key."
+          echo "Cache is stored by GitHub Actions and cannot be found in the repository workspace."
+
+      - name: Install Python dependencies using the pip cache
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
 
       - name: Print workflow information
         run: |
