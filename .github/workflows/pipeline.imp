@@ -58,7 +58,7 @@ jobs:
         run: |
           IMAGE="us-central1-docker.pkg.dev/learnerspace-412414/medibot/medibot-app"
           TAG="${GITHUB_SHA}"
-          echo "image=$IMAGE" >> $GITHUB_OUTPUT
+          echo "image=$IMAGE:$TAG" >> $GITHUB_OUTPUT
 
 
   Deploy:

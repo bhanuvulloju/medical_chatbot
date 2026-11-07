@@ -1,0 +1,54 @@
+name: Medibot-cicd-pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+env:
+  APP_NAME: Medical Chatbot
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Print workflow information
+        run: |
+          echo "Application: $APP_NAME"
+          echo "Python version:"
+          python --version
+          echo "Workspace: $GITHUB_WORKSPACE"
+          echo "Branch or tag: $GITHUB_REF_NAME"
+
+      - name: Run a basic Python check
+        run: python -c "print('GitHub Actions workflow is running successfully')"
+
+      - name: Create workflow summary
+        run: |
+          echo "### $APP_NAME build summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Python: 3.10" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Runner: ubuntu-latest" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Event: $GITHUB_EVENT_NAME" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Create build information file
+        run: |
+          echo "App: $APP_NAME" > build-info.txt
+          echo "Event: $GITHUB_EVENT_NAME" >> build-info.txt
+          echo "Commit: $GITHUB_SHA" >> build-info.txt
+
+      - name: Upload build information
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-info
+          path: build-info.txt
